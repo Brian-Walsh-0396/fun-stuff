@@ -184,3 +184,31 @@ External Power Supply
                   └──────► Nano GND
 ```
 Without a common ground, the Nano's control signals may not have a reliable electrical reference.
+## Recommended Assembly Order
+Do not immediately assemble everything at once.
+
+Build and test the project in stages.
+### 1. Assemble the Pan/Tilt Mechanism
+Verify that:
+
+- Both servos are securely mounted.
+- The pan mechanism moves freely.
+- The tilt mechanism moves freely.
+- No cables interfere with movement.
+- The servos are not being mechanically forced against their limits.
+
+Do not manually force the servo horns through their range.
+## 2. Connect the Nano
+
+Connect the ELEGOO Nano to your computer using USB-C.
+
+Verify that the board can:
+
+- Connect to the computer.
+- Upload an Arduino sketch.
+- Open the Serial Monitor.
+## Test the Servos
+Before connecting the laser, test the pan/tilt mechanism.
+
+Start with conservative limits.
+See Test Script in Code Base

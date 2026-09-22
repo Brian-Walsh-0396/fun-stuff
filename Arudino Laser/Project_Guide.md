@@ -142,3 +142,13 @@ KY-008-style modules can vary between manufacturers.
 Verify the labels on your actual module before connecting it.
 
 Do not assume the pin order based solely on the appearance of the module.
+---
+## Complete Pin Out
+| Nano Pin | Function           | Connected To        |
+| -------- | ------------------ | ------------------- |
+| D7       | Laser Control      | KY-008 Signal       |
+| D9       | Pan Control        | Pan Servo Signal    |
+| D10      | Tilt Control       | Tilt Servo Signal   |
+| GND      | Common Ground      | External Supply GND |
+| 5V       | Logic/Module Power | KY-008              |
+The servos should receive their power from the external regulated 5V supply.

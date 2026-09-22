@@ -151,4 +151,5 @@ Do not assume the pin order based solely on the appearance of the module.
 | D10      | Tilt Control       | Tilt Servo Signal   |
 | GND      | Common Ground      | External Supply GND |
 | 5V       | Logic/Module Power | KY-008              |
+
 The servos should receive their power from the external regulated 5V supply.

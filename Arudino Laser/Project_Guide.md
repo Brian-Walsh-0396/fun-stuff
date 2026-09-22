@@ -70,6 +70,7 @@ External GND ─────► Common Ground
 ```
 This works, but the wiring can become difficult to manage.
 ## With a Breadboard
+``` text
 A breadboard provides convenient power and ground rails:
                     ELEGOO NANO
                   ┌─────────────┐
@@ -94,6 +95,7 @@ External GND ────────────────►│ - Ground Rai
                     Pan Servo                Tilt Servo
                     5V / GND                 5V / GND
 
+```
 ## Reccomdended Set Up
 For this project, using a small breadboard is recommended. It provides a cleaner wiring layout and makes it easier to establish a common ground between the ELEGOO Nano, external 5V power supply, servos, and laser module.
 > **Important:** The external 5V supply's ground must be connected to the Nano's GND so that the servo control signals have a common reference.

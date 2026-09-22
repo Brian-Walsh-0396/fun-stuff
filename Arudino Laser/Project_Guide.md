@@ -99,3 +99,39 @@ External GND ────────────────►│ - Ground Rai
 ## Reccomdended Set Up
 For this project, using a small breadboard is recommended. It provides a cleaner wiring layout and makes it easier to establish a common ground between the ELEGOO Nano, external 5V power supply, servos, and laser module.
 > **Important:** The external 5V supply's ground must be connected to the Nano's GND so that the servo control signals have a common reference.
+---
+# Wiring
+
+## Servo Connections
+
+The two servos control the **pan** and **tilt** axes.
+
+| Component         | Nano Pin |
+| ----------------- | -------- |
+| Pan Servo Signal  | D9       |
+| Tilt Servo Signal | D10      |
+
+## Pan Servo
+``` text
+Pan Servo
+├── Signal ──► Nano D9
+├── +5V ────► External 5V
+└── GND ────► Common GND
+```
+## Tilt Servo
+``` text
+Pan Servo
+├── Signal ──► Nano D9
+├── +5V ────► External 5V
+└── GND ────► Common GND
+```
+> **Important:** Connect the external power supply's GND to the Nano's GND. The Nano and external power supply need a common ground for the servo control signals to work correctly.
+---
+## Laser Module
+The KY-008 module typically has three connections:
+``` text
+KY-008
+├── S ──► Nano D7
+├── + ──► 5V
+└── - ──► GND
+```

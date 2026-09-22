@@ -32,3 +32,14 @@ The system is controlled from a Java desktop application over USB serial communi
 │ External 5V Supply   │
 │      (Servos)        │
 └──────────────────────┘
+# Hardware
+
+## Required Components
+
+- ELEGOO Arduino-compatible Nano with USB-C
+- Adafruit Mini Pan-Tilt Kit with assembled micro servos
+- KY-008 650 nm laser module
+- USB-C cable
+- Jumper wires
+- External regulated 5V power supply for the servos
+- Small breadboard — recommended, but optional

@@ -135,3 +135,10 @@ KY-008
 ├── + ──► 5V
 └── - ──► GND
 ```
+### Important
+
+KY-008-style modules can vary between manufacturers.
+
+Verify the labels on your actual module before connecting it.
+
+Do not assume the pin order based solely on the appearance of the module.

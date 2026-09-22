@@ -212,3 +212,16 @@ Before connecting the laser, test the pan/tilt mechanism.
 
 Start with conservative limits.
 See Test Script in Code Base
+
+## 4. Connect the Laser
+
+After the servos are working:
+``` text
+KY-008
+S  → D7
++  → 5V
+-  → GND
+```
+Test the laser separately.
+
+Use a safe, non-reflective test surface such as cardboard.

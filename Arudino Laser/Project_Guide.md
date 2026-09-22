@@ -153,3 +153,34 @@ Do not assume the pin order based solely on the appearance of the module.
 | 5V       | Logic/Module Power | KY-008              |
 
 The servos should receive their power from the external regulated 5V supply.
+## Why Use External Servo Power?
+Micro servos can draw significantly more current when:
+
+- Starting movement
+- Changing direction
+- Moving under load
+- Holding position
+- Reaching the limits of their movement
+
+Trying to power both servos directly from the Nano or USB connection can cause:
+
+- Servo jitter
+- Nano resets
+- USB disconnects
+- Unstable laser behavior
+- Communication problems
+
+Using an external regulated 5V supply provides the servos with a more stable power source.
+## Common Ground
+The most important part of the external power arrangement is the shared ground.
+``` text
+External Power Supply
+
+       +5V ──────────────► Servo +5V
+        │
+        │
+       GND ───────┬──────► Servo GND
+                  │
+                  └──────► Nano GND
+```
+Without a common ground, the Nano's control signals may not have a reliable electrical reference.

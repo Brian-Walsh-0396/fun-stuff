@@ -37,6 +37,7 @@ void setup() {
   Serial.println("ON   - Turn laser ON");
   Serial.println("OFF  - Turn laser OFF");
   Serial.println("TEST - Turn laser ON for 2 seconds");
+  Serial.println("E - Emergency Stop");
   Serial.println();
   Serial.println("Ready.");
 }
@@ -75,9 +76,13 @@ void loop() {
       laserStartTime = millis();
 
       Serial.println("LASER: TEST STARTED");
-    }
+    } else if (command == "E") {
 
-    else {
+      digitalWrite(LASER_PIN, LOW);
+      laserActive = false;
+
+      Serial.println("LASER: OFF");
+    } else {
 
       Serial.println("Unknown command.");
       Serial.println("Use ON, OFF, or TEST.");

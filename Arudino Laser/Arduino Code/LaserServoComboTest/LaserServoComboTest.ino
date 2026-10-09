@@ -130,6 +130,7 @@ void setup() {
   Serial.println(F("LSWEEP"));
   Serial.println(F("LNOD"));
   Serial.println(F("E - Emergency Laser Stop"));
+  Serial.println(F("LASERDANCE"));
 
   Serial.println(F("=============================="));
 }
@@ -275,19 +276,20 @@ void processCommand() {
     laserNod();
   }
 
-  else if (strcmp(command, "E") == 0) {
-
+else if (strcmp(command, "E") == 0) {
     laserOff();
-
     Serial.println(F("*** LASER STOPPED ***"));
-  }
-
-  else {
-
-    Serial.println(F("Unknown command."));
-  }
 }
 
+else if (strcmp(command, "LASERDANCE") == 0) {
+    laserdance();
+}
+
+else {
+    Serial.println(F("Unknown command."));
+}
+
+} // End of processCommand()
 
 // ============================================================
 // SMOOTH SERVO MOVEMENT
@@ -743,6 +745,84 @@ void laserOff() {
   digitalWrite(
     LASER_PIN,
     LOW);
+}
+
+// ============================================================
+// Laser Dance
+// ============================================================
+void laserdance() {
+
+  laserOff();
+
+  Serial.println(F("DANCE START"));
+
+  centerServos();
+
+  delay(200);
+
+
+  digitalWrite(
+    LASER_PIN,
+    HIGH);
+
+  // Move to starting point
+  smoothMove(
+    PAN_CENTER + DANCE_PAN_RADIUS,
+    TILT_CENTER);
+
+
+  for (
+    byte circle = 0;
+    circle < DANCE_CIRCLES;
+    circle++) {
+
+    for (
+      byte step = 0;
+      step < DANCE_STEPS;
+      step++) {
+
+      float angle =
+        (2.0 * PI * step) / DANCE_STEPS;
+
+
+      int panPosition =
+        PAN_CENTER + DANCE_PAN_RADIUS * cos(angle);
+
+
+      int tiltPosition =
+        TILT_CENTER + DANCE_TILT_RADIUS * sin(angle);
+
+
+      panPosition = constrain(
+        panPosition,
+        PAN_MIN,
+        PAN_MAX);
+
+
+      tiltPosition = constrain(
+        tiltPosition,
+        TILT_MIN,
+        TILT_MAX);
+
+
+      panServo.write(panPosition);
+      tiltServo.write(tiltPosition);
+
+
+      currentPan = panPosition;
+      currentTilt = tiltPosition;
+
+
+      delay(DANCE_DELAY);
+    }
+  }
+
+
+  centerServos();
+
+laserOff();
+
+Serial.println(F("LASER DANCE COMPLETE"));
 }
 
 

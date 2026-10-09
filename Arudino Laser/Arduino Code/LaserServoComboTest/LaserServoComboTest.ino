@@ -5,8 +5,8 @@
 // PIN CONFIGURATION
 // ============================================================
 
-const byte PAN_PIN   = 10;
-const byte TILT_PIN  = 9;
+const byte PAN_PIN = 10;
+const byte TILT_PIN = 9;
 const byte LASER_PIN = 7;
 
 
@@ -14,13 +14,13 @@ const byte LASER_PIN = 7;
 // SERVO LIMITS
 // ============================================================
 
-const byte PAN_MIN   = 20;
-const byte PAN_MAX   = 160;
+const byte PAN_MIN = 20;
+const byte PAN_MAX = 160;
 
-const byte TILT_MIN  = 15;
-const byte TILT_MAX  = 165;
+const byte TILT_MIN = 15;
+const byte TILT_MAX = 165;
 
-const byte PAN_CENTER  = 90;
+const byte PAN_CENTER = 90;
 const byte TILT_CENTER = 90;
 
 
@@ -35,11 +35,11 @@ const byte SMOOTH_DELAY = 12;
 // DANCE SETTINGS
 // ============================================================
 
-const byte DANCE_PAN_RADIUS  = 35;
+const byte DANCE_PAN_RADIUS = 35;
 const byte DANCE_TILT_RADIUS = 35;
 
-const byte DANCE_STEPS   = 120;
-const byte DANCE_DELAY   = 15;
+const byte DANCE_STEPS = 120;
+const byte DANCE_DELAY = 15;
 const byte DANCE_CIRCLES = 3;
 
 
@@ -48,10 +48,10 @@ const byte DANCE_CIRCLES = 3;
 // ============================================================
 
 const unsigned int LASER_TEST_DURATION = 2000;
-const unsigned int FIRE_ON_DURATION    = 1000;
-const unsigned int FIRE_OFF_DURATION   = 500;
+const unsigned int FIRE_ON_DURATION = 1500;
+const unsigned int FIRE_OFF_DURATION = 350;
 
-const byte FIRE_TOTAL = 3;
+const byte FIRE_TOTAL = 5;
 
 
 // ============================================================
@@ -66,7 +66,7 @@ Servo tiltServo;
 // CURRENT POSITION
 // ============================================================
 
-byte currentPan  = PAN_CENTER;
+byte currentPan = PAN_CENTER;
 byte currentTilt = TILT_CENTER;
 
 
@@ -205,32 +205,28 @@ void processCommand() {
 
     smoothMove(
       PAN_MIN,
-      currentTilt
-    );
+      currentTilt);
   }
 
   else if (strcmp(command, "PANMAX") == 0) {
 
     smoothMove(
       PAN_MAX,
-      currentTilt
-    );
+      currentTilt);
   }
 
   else if (strcmp(command, "TILTMIN") == 0) {
 
     smoothMove(
       currentPan,
-      TILT_MIN
-    );
+      TILT_MIN);
   }
 
   else if (strcmp(command, "TILTMAX") == 0) {
 
     smoothMove(
       currentPan,
-      TILT_MAX
-    );
+      TILT_MAX);
   }
 
   else if (strcmp(command, "SERVOTEST") == 0) {
@@ -302,19 +298,15 @@ void smoothMove(byte targetPan, byte targetTilt) {
   targetPan = constrain(
     targetPan,
     PAN_MIN,
-    PAN_MAX
-  );
+    PAN_MAX);
 
   targetTilt = constrain(
     targetTilt,
     TILT_MIN,
-    TILT_MAX
-  );
+    TILT_MAX);
 
   while (
-    currentPan != targetPan ||
-    currentTilt != targetTilt
-  ) {
+    currentPan != targetPan || currentTilt != targetTilt) {
 
     if (currentPan < targetPan) {
       currentPan++;
@@ -350,8 +342,7 @@ void centerServos() {
 
   smoothMove(
     PAN_CENTER,
-    TILT_CENTER
-  );
+    TILT_CENTER);
 
   Serial.println(F("CENTERED"));
 }
@@ -375,8 +366,7 @@ void servoTest() {
   // Pan minimum
   smoothMove(
     PAN_MIN,
-    TILT_CENTER
-  );
+    TILT_CENTER);
 
   delay(300);
 
@@ -384,8 +374,7 @@ void servoTest() {
   // Pan maximum
   smoothMove(
     PAN_MAX,
-    TILT_CENTER
-  );
+    TILT_CENTER);
 
   delay(300);
 
@@ -393,8 +382,7 @@ void servoTest() {
   // Return pan center
   smoothMove(
     PAN_CENTER,
-    TILT_CENTER
-  );
+    TILT_CENTER);
 
   delay(300);
 
@@ -402,8 +390,7 @@ void servoTest() {
   // Tilt minimum
   smoothMove(
     PAN_CENTER,
-    TILT_MIN
-  );
+    TILT_MIN);
 
   delay(300);
 
@@ -411,8 +398,7 @@ void servoTest() {
   // Tilt maximum
   smoothMove(
     PAN_CENTER,
-    TILT_MAX
-  );
+    TILT_MAX);
 
   delay(300);
 
@@ -442,48 +428,41 @@ void dance() {
   // Move to starting point
   smoothMove(
     PAN_CENTER + DANCE_PAN_RADIUS,
-    TILT_CENTER
-  );
+    TILT_CENTER);
 
 
   for (
     byte circle = 0;
     circle < DANCE_CIRCLES;
-    circle++
-  ) {
+    circle++) {
 
     for (
       byte step = 0;
       step < DANCE_STEPS;
-      step++
-    ) {
+      step++) {
 
       float angle =
         (2.0 * PI * step) / DANCE_STEPS;
 
 
       int panPosition =
-        PAN_CENTER +
-        DANCE_PAN_RADIUS * cos(angle);
+        PAN_CENTER + DANCE_PAN_RADIUS * cos(angle);
 
 
       int tiltPosition =
-        TILT_CENTER +
-        DANCE_TILT_RADIUS * sin(angle);
+        TILT_CENTER + DANCE_TILT_RADIUS * sin(angle);
 
 
       panPosition = constrain(
         panPosition,
         PAN_MIN,
-        PAN_MAX
-      );
+        PAN_MAX);
 
 
       tiltPosition = constrain(
         tiltPosition,
         TILT_MIN,
-        TILT_MAX
-      );
+        TILT_MAX);
 
 
       panServo.write(panPosition);
@@ -525,8 +504,7 @@ void laserSweep() {
   // Move to starting position
   smoothMove(
     PAN_MIN,
-    TILT_CENTER
-  );
+    TILT_CENTER);
 
   delay(250);
 
@@ -534,8 +512,7 @@ void laserSweep() {
   // Laser ON
   digitalWrite(
     LASER_PIN,
-    HIGH
-  );
+    HIGH);
 
   Serial.println(F("LASER ON"));
 
@@ -543,22 +520,21 @@ void laserSweep() {
   // Sweep across
   smoothMove(
     PAN_MAX,
-    TILT_CENTER
-  );
+    TILT_CENTER);
 
 
-  // Laser OFF
-  digitalWrite(
-    LASER_PIN,
-    LOW
-  );
 
-  Serial.println(F("LASER OFF"));
 
 
   // Return to center
   centerServos();
 
+  // Laser OFF
+  digitalWrite(
+    LASER_PIN,
+    LOW);
+
+  Serial.println(F("LASER OFF"));
 
   Serial.println(F("LASER SWEEP COMPLETE"));
 }
@@ -584,8 +560,7 @@ void laserNod() {
   // Move to starting position
   smoothMove(
     PAN_CENTER,
-    TILT_MIN
-  );
+    TILT_MIN);
 
   delay(250);
 
@@ -593,8 +568,7 @@ void laserNod() {
   // Laser ON
   digitalWrite(
     LASER_PIN,
-    HIGH
-  );
+    HIGH);
 
   Serial.println(F("LASER ON"));
 
@@ -602,15 +576,10 @@ void laserNod() {
   // Nod
   smoothMove(
     PAN_CENTER,
-    TILT_MAX
-  );
+    TILT_MAX);
 
 
-  // Laser OFF
-  digitalWrite(
-    LASER_PIN,
-    LOW
-  );
+
 
   Serial.println(F("LASER OFF"));
 
@@ -618,6 +587,13 @@ void laserNod() {
   // Return to center
   centerServos();
 
+
+  // Laser OFF
+  digitalWrite(
+    LASER_PIN,
+    LOW);
+
+  Serial.println(F("LASER OFF"));
 
   Serial.println(F("LASER NOD COMPLETE"));
 }
@@ -633,8 +609,7 @@ void startLaserTest() {
 
   digitalWrite(
     LASER_PIN,
-    HIGH
-  );
+    HIGH);
 
   laserTestActive = true;
 
@@ -653,13 +628,11 @@ void updateLaserTest() {
 
   if (
     millis() - laserTimer
-    >= LASER_TEST_DURATION
-  ) {
+    >= LASER_TEST_DURATION) {
 
     digitalWrite(
       LASER_PIN,
-      LOW
-    );
+      LOW);
 
     laserTestActive = false;
 
@@ -683,8 +656,7 @@ void startFire() {
 
   digitalWrite(
     LASER_PIN,
-    HIGH
-  );
+    HIGH);
 
   fireTimer = millis();
 
@@ -707,13 +679,11 @@ void updateFire() {
 
     if (
       millis() - fireTimer
-      >= FIRE_ON_DURATION
-    ) {
+      >= FIRE_ON_DURATION) {
 
       digitalWrite(
         LASER_PIN,
-        LOW
-      );
+        LOW);
 
       fireLaserOn = false;
 
@@ -730,8 +700,7 @@ void updateFire() {
 
     if (
       millis() - fireTimer
-      >= FIRE_OFF_DURATION
-    ) {
+      >= FIRE_OFF_DURATION) {
 
       // Finished
       if (fireCount >= FIRE_TOTAL) {
@@ -740,8 +709,7 @@ void updateFire() {
 
         digitalWrite(
           LASER_PIN,
-          LOW
-        );
+          LOW);
 
         Serial.println(F("FIRE COMPLETE"));
       }
@@ -753,8 +721,7 @@ void updateFire() {
 
         digitalWrite(
           LASER_PIN,
-          HIGH
-        );
+          HIGH);
 
         fireLaserOn = true;
 
@@ -775,8 +742,7 @@ void laserOff() {
 
   digitalWrite(
     LASER_PIN,
-    LOW
-  );
+    LOW);
 }
 
 

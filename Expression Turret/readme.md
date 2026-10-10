@@ -20,9 +20,9 @@ The following SVGs are early design concepts for the 5×5 LED display. They are 
 |:---:|:---:|:---:|
 | ![Happy face](Faces/Happy.svg) | ![Angry face](Faces/Angry.svg) | ![Surprised face](Faces/Surprised.svg) |
 
-| Sad | Neutral v1 | Neutral v2 |
+| Sad | Neutral v1 |
 |:---:|:---:|:---:|
-| ![Sad face](Faces/Sad.svg) | ![Neutral face version 1](Faces/Neutral_v1.svg) | ![Neutral face version 2](Faces/Neutral_v2.svg) |
+| ![Sad face](Faces/Sad.svg) | ![Neutral face version 1](Faces/Neutral_v1.svg) |
 
 ### Project Status
 **Status:** Planning / Awaiting Hardware Assembly

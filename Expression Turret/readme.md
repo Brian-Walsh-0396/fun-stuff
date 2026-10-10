@@ -12,6 +12,18 @@ The goal is to create an interactive robotic face using an Arduino Nano, Adafrui
 - Coordinated movement and LED animations
 - User-controlled commands through a computer interface
 
+### Proposed Facial Expressions
+
+The following SVGs are early design concepts for the 5×5 LED display. They are not yet confirmed as working hardware animations.
+
+| Happy | Angry | Surprised |
+|:---:|:---:|:---:|
+| ![Happy face](images/Happy.svg) | ![Angry face](images/Angry.svg) | ![Surprised face](images/Surprised.svg) |
+
+| Sad | Neutral v1 | Neutral v2 |
+|:---:|:---:|:---:|
+| ![Sad face](images/Sad.svg) | ![Neutral face version 1](images/Neutral_v1.svg) | ![Neutral face version 2](images/Neutral_v2.svg) |
+
 ### Project Status
 **Status:** Planning / Awaiting Hardware Assembly
 

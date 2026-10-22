@@ -235,6 +235,10 @@ void processCommand(String command) {
 
     startDreamcoat();
 
+  } else if (command == "LOCATOR") {
+
+    showLocator();
+
   } else if (command == "ON") {
 
     setSolidColor(255, 255, 255, ON_BRIGHTNESS);
@@ -286,6 +290,52 @@ void setSolidColor(
   }
 
   pixels.show();
+}
+
+// =====================================
+// LOCATOR MODE
+// =====================================
+
+void showLocator() {
+
+  // Stop active animations
+  currentMode = MODE_SOLID;
+
+  // Set brightness to 80%
+  pixels.setBrightness(COLOR_BRIGHTNESS);
+
+  // Turn off all LEDs
+  pixels.clear();
+
+  // First LED (index 0) = Green
+  pixels.setPixelColor(
+    0,
+    pixels.Color(0, 255, 0)
+  );
+
+  // Last LED (index 24) = Red
+  pixels.setPixelColor(
+    LED_COUNT - 1,
+    pixels.Color(255, 0, 0)
+  );
+
+  // Update the LED matrix
+  pixels.show();
+
+  // Display location information
+  Serial.println();
+  Serial.println("===========================");
+  Serial.println("       LOCATOR MODE");
+  Serial.println("===========================");
+  Serial.println();
+
+  Serial.println("GREEN = First LED (1,1)");
+  Serial.println("RED   = Last LED  (5,5)");
+
+  Serial.println();
+  Serial.println("All other LEDs are OFF.");
+  Serial.println("---------------------------");
+  Serial.println();
 }
 
 // =====================================
@@ -450,6 +500,7 @@ void printHelp() {
   Serial.println();
   Serial.println("RAINBOW   - Smooth Rainbow");
   Serial.println("DREAMCOAT - Dreamcoat Color Cycle");
+  Serial.println("LOCATOR   - Show First/Last LED");
 
   Serial.println();
   Serial.println("ON        - White at 50%");

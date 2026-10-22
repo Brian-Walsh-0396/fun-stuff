@@ -16,11 +16,14 @@
 #define ON_BRIGHTNESS 128     // 50%
 
 // =====================================
-// RAINBOW SETTINGS
+// ANIMATION SETTINGS
 // =====================================
 
 #define FRAME_DELAY 20
 #define RAINBOW_SPEED 128
+
+#define DREAMCOAT_DELAY 1000
+#define DREAMCOAT_BLUE_DELAY 3000
 
 Adafruit_NeoPixel pixels(
   LED_COUNT,
@@ -35,7 +38,8 @@ Adafruit_NeoPixel pixels(
 enum DisplayMode {
   MODE_OFF,
   MODE_SOLID,
-  MODE_RAINBOW
+  MODE_RAINBOW,
+  MODE_DREAMCOAT
 };
 
 DisplayMode currentMode = MODE_OFF;
@@ -44,6 +48,66 @@ uint16_t rainbowOffset = 0;
 unsigned long lastFrame = 0;
 
 String inputBuffer = "";
+
+// =====================================
+// DREAMCOAT COLOR DEFINITIONS
+// =====================================
+
+struct DreamcoatColor {
+  const char* name;
+  uint8_t red;
+  uint8_t green;
+  uint8_t blue;
+  unsigned long duration;
+};
+
+const DreamcoatColor dreamcoatColors[] = {
+
+  {"Red",       255,   0,   0, 1000},
+  {"Yellow",    255, 255,   0, 1000},
+  {"Green",       0, 255,   0, 1000},
+  {"Brown",     139,  69,  19, 1000},
+
+  {"Scarlet",   255,  36,   0, 1000},
+  {"Black",       0,   0,   0, 1000},
+  {"Ochre",     204, 119,  34, 1000},
+  {"Peach",     255, 218, 185, 1000},
+
+  {"Ruby",      224,  17,  95, 1000},
+  {"Olive",     128, 128,   0, 1000},
+  {"Violet",    143,   0, 255, 1000},
+  {"Fawn",      229, 170, 112, 1000},
+
+  {"Lilac",     200, 162, 200, 1000},
+  {"Gold",      255, 215,   0, 1000},
+  {"Chocolate", 210, 105,  30, 1000},
+  {"Mauve",     224, 176, 255, 1000},
+
+  {"Cream",     255, 253, 208, 1000},
+  {"Crimson",   220,  20,  60, 1000},
+  {"Silver",    192, 192, 192, 1000},
+  {"Rose",      255,   0, 127, 1000},
+
+  {"Azure",       0, 127, 255, 1000},
+  {"Lemon",     255, 247,   0, 1000},
+  {"Russet",    128,  70,  27, 1000},
+  {"Grey",      128, 128, 128, 1000},
+
+  {"Purple",    128,   0, 255, 1000},
+  {"White",     255, 255, 255, 1000},
+  {"Pink",      255, 105, 180, 1000},
+  {"Orange",    255, 165,   0, 1000},
+
+  // Final Blue stays on for 3 seconds
+  {"Blue",        0,   0, 255, 3000}
+};
+
+const uint8_t DREAMCOAT_COUNT =
+  sizeof(dreamcoatColors) /
+  sizeof(dreamcoatColors[0]);
+
+uint8_t dreamcoatIndex = 0;
+unsigned long dreamcoatLastChange = 0;
 
 // =====================================
 // SETUP
@@ -78,7 +142,7 @@ void setup() {
 
 void loop() {
 
-  // Process incoming serial commands
+  // Read serial commands
   while (Serial.available() > 0) {
 
     char incoming = Serial.read();
@@ -98,7 +162,7 @@ void loop() {
     }
   }
 
-  // Update rainbow without blocking
+  // Rainbow animation
   if (currentMode == MODE_RAINBOW) {
 
     if (millis() - lastFrame >= FRAME_DELAY) {
@@ -106,6 +170,12 @@ void loop() {
       lastFrame = millis();
       updateRainbow();
     }
+  }
+
+  // Dreamcoat animation
+  if (currentMode == MODE_DREAMCOAT) {
+
+    updateDreamcoat();
   }
 }
 
@@ -124,37 +194,30 @@ void processCommand(String command) {
   if (command == "RED") {
 
     setSolidColor(255, 0, 0, COLOR_BRIGHTNESS);
-    Serial.println("Color: RED");
 
   } else if (command == "ORANGE") {
 
     setSolidColor(255, 165, 0, COLOR_BRIGHTNESS);
-    Serial.println("Color: ORANGE");
 
   } else if (command == "YELLOW") {
 
     setSolidColor(255, 255, 0, COLOR_BRIGHTNESS);
-    Serial.println("Color: YELLOW");
 
   } else if (command == "GREEN") {
 
     setSolidColor(0, 255, 0, COLOR_BRIGHTNESS);
-    Serial.println("Color: GREEN");
 
   } else if (command == "BLUE") {
 
     setSolidColor(0, 0, 255, COLOR_BRIGHTNESS);
-    Serial.println("Color: BLUE");
 
   } else if (command == "WHITE") {
 
     setSolidColor(255, 255, 255, COLOR_BRIGHTNESS);
-    Serial.println("Color: WHITE");
 
   } else if (command == "PURPLE") {
 
     setSolidColor(128, 0, 255, COLOR_BRIGHTNESS);
-    Serial.println("Color: PURPLE");
 
   } else if (command == "RAINBOW") {
 
@@ -167,6 +230,10 @@ void processCommand(String command) {
     updateRainbow();
 
     Serial.println("Mode: RAINBOW");
+
+  } else if (command == "DREAMCOAT") {
+
+    startDreamcoat();
 
   } else if (command == "ON") {
 
@@ -194,7 +261,7 @@ void processCommand(String command) {
 }
 
 // =====================================
-// SET SOLID COLOR
+// SOLID COLOR CONTROL
 // =====================================
 
 void setSolidColor(
@@ -222,7 +289,7 @@ void setSolidColor(
 }
 
 // =====================================
-// SMOOTH RAINBOW ANIMATION
+// SMOOTH RAINBOW
 // =====================================
 
 void updateRainbow() {
@@ -245,6 +312,124 @@ void updateRainbow() {
 }
 
 // =====================================
+// DREAMCOAT CONTROLLER
+// =====================================
+
+void startDreamcoat() {
+
+  currentMode = MODE_DREAMCOAT;
+  dreamcoatIndex = 0;
+
+  Serial.println();
+  Serial.println("DREAMCOAT MODE STARTED");
+  Serial.println("---------------------------");
+  Serial.println();
+
+  Serial.println("I look handsome, I look smart");
+  Serial.println("I am a walking work of art");
+  Serial.println("Such a dazzling coat of many colors");
+  Serial.println("How I love my coat of many colors");
+
+  Serial.println();
+  Serial.println("---------------------------");
+  Serial.println();
+
+  showDreamcoatColor();
+
+  dreamcoatLastChange = millis();
+}
+
+// =====================================
+// DISPLAY CURRENT DREAMCOAT COLOR
+// =====================================
+
+void showDreamcoatColor() {
+
+  const DreamcoatColor &color =
+    dreamcoatColors[dreamcoatIndex];
+
+  pixels.setBrightness(COLOR_BRIGHTNESS);
+
+  // Black means all LEDs OFF
+  if (
+    color.red == 0 &&
+    color.green == 0 &&
+    color.blue == 0
+  ) {
+
+    pixels.clear();
+
+  } else {
+
+    uint32_t pixelColor = pixels.Color(
+      color.red,
+      color.green,
+      color.blue
+    );
+
+    for (uint8_t i = 0; i < LED_COUNT; i++) {
+
+      pixels.setPixelColor(i, pixelColor);
+    }
+  }
+
+  pixels.show();
+
+  Serial.print("Dreamcoat: ");
+  Serial.print(color.name);
+
+  Serial.print(" | Duration: ");
+  Serial.print(color.duration / 1000);
+  Serial.println(" second(s)");
+}
+
+// =====================================
+// ADVANCE DREAMCOAT SEQUENCE
+// =====================================
+
+void updateDreamcoat() {
+
+  unsigned long currentTime = millis();
+
+  unsigned long duration =
+    dreamcoatColors[dreamcoatIndex].duration;
+
+  if (
+    currentTime - dreamcoatLastChange >= duration
+  ) {
+
+    dreamcoatIndex++;
+
+    // Sequence completed after final Blue
+    if (dreamcoatIndex >= DREAMCOAT_COUNT) {
+
+      // Stop Dreamcoat mode
+      currentMode = MODE_OFF;
+
+      // Turn off all 25 LEDs
+      pixels.clear();
+      pixels.show();
+
+      // Display completion message
+      Serial.println();
+      Serial.println("===========================");
+      Serial.println("    DREAMCOAT COMPLETE");
+      Serial.println("===========================");
+      Serial.println();
+      Serial.println("All LEDs turned OFF.");
+      Serial.println();
+
+      return;
+    }
+
+    // Display the next color
+    showDreamcoatColor();
+
+    dreamcoatLastChange = currentTime;
+  }
+}
+
+// =====================================
 // SERIAL HELP MENU
 // =====================================
 
@@ -254,23 +439,26 @@ void printHelp() {
   Serial.println("AVAILABLE COMMANDS");
   Serial.println("---------------------------");
 
-  Serial.println("RED     - Solid Red");
-  Serial.println("ORANGE  - Solid Orange");
-  Serial.println("YELLOW  - Solid Yellow");
-  Serial.println("GREEN   - Solid Green");
-  Serial.println("BLUE    - Solid Blue");
-  Serial.println("WHITE   - Solid White");
-  Serial.println("PURPLE  - Solid Purple");
+  Serial.println("RED       - Solid Red");
+  Serial.println("ORANGE    - Solid Orange");
+  Serial.println("YELLOW    - Solid Yellow");
+  Serial.println("GREEN     - Solid Green");
+  Serial.println("BLUE      - Solid Blue");
+  Serial.println("WHITE     - Solid White");
+  Serial.println("PURPLE    - Solid Purple");
 
   Serial.println();
-  Serial.println("RAINBOW - Smooth Rainbow");
-  Serial.println("ON      - White at 50%");
-  Serial.println("OFF     - Turn LEDs Off");
-  Serial.println("HELP    - Show Commands");
+  Serial.println("RAINBOW   - Smooth Rainbow");
+  Serial.println("DREAMCOAT - Dreamcoat Color Cycle");
 
   Serial.println();
-  Serial.println("Color brightness: 80%");
-  Serial.println("Serial baud rate: 115200");
+  Serial.println("ON        - White at 50%");
+  Serial.println("OFF       - Turn LEDs Off");
+  Serial.println("HELP      - Show Commands");
+
+  Serial.println();
+  Serial.println("Color Brightness: 80%");
+  Serial.println("Serial Baud Rate: 115200");
   Serial.println("---------------------------");
   Serial.println();
 }

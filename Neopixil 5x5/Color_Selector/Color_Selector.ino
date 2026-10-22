@@ -28,8 +28,7 @@
 Adafruit_NeoPixel pixels(
   LED_COUNT,
   LED_PIN,
-  NEO_GRB + NEO_KHZ800
-);
+  NEO_GRB + NEO_KHZ800);
 
 // =====================================
 // OPERATING MODES
@@ -63,48 +62,47 @@ struct DreamcoatColor {
 
 const DreamcoatColor dreamcoatColors[] = {
 
-  {"Red",       255,   0,   0, 1000},
-  {"Yellow",    255, 255,   0, 1000},
-  {"Green",       0, 255,   0, 1000},
-  {"Brown",     139,  69,  19, 1000},
+  { "Red", 255, 0, 0, 1000 },
+  { "Yellow", 255, 255, 0, 1000 },
+  { "Green", 0, 255, 0, 1000 },
+  { "Brown", 139, 69, 19, 1000 },
 
-  {"Scarlet",   255,  36,   0, 1000},
-  {"Black",       0,   0,   0, 1000},
-  {"Ochre",     204, 119,  34, 1000},
-  {"Peach",     255, 218, 185, 1000},
+  { "Scarlet", 255, 36, 0, 1000 },
+  { "Black", 0, 0, 0, 1000 },
+  { "Ochre", 204, 119, 34, 1000 },
+  { "Peach", 255, 218, 185, 1000 },
 
-  {"Ruby",      224,  17,  95, 1000},
-  {"Olive",     128, 128,   0, 1000},
-  {"Violet",    143,   0, 255, 1000},
-  {"Fawn",      229, 170, 112, 1000},
+  { "Ruby", 224, 17, 95, 1000 },
+  { "Olive", 128, 128, 0, 1000 },
+  { "Violet", 143, 0, 255, 1000 },
+  { "Fawn", 229, 170, 112, 1000 },
 
-  {"Lilac",     200, 162, 200, 1000},
-  {"Gold",      255, 215,   0, 1000},
-  {"Chocolate", 210, 105,  30, 1000},
-  {"Mauve",     224, 176, 255, 1000},
+  { "Lilac", 200, 162, 200, 1000 },
+  { "Gold", 255, 215, 0, 1000 },
+  { "Chocolate", 210, 105, 30, 1000 },
+  { "Mauve", 224, 176, 255, 1000 },
 
-  {"Cream",     255, 253, 208, 1000},
-  {"Crimson",   220,  20,  60, 1000},
-  {"Silver",    192, 192, 192, 1000},
-  {"Rose",      255,   0, 127, 1000},
+  { "Cream", 255, 253, 208, 1000 },
+  { "Crimson", 220, 20, 60, 1000 },
+  { "Silver", 192, 192, 192, 1000 },
+  { "Rose", 255, 0, 127, 1000 },
 
-  {"Azure",       0, 127, 255, 1000},
-  {"Lemon",     255, 247,   0, 1000},
-  {"Russet",    128,  70,  27, 1000},
-  {"Grey",      128, 128, 128, 1000},
+  { "Azure", 0, 127, 255, 1000 },
+  { "Lemon", 255, 247, 0, 1000 },
+  { "Russet", 128, 70, 27, 1000 },
+  { "Grey", 128, 128, 128, 1000 },
 
-  {"Purple",    128,   0, 255, 1000},
-  {"White",     255, 255, 255, 1000},
-  {"Pink",      255, 105, 180, 1000},
-  {"Orange",    255, 165,   0, 1000},
+  { "Purple", 128, 0, 255, 1000 },
+  { "White", 255, 255, 255, 1000 },
+  { "Pink", 255, 105, 180, 1000 },
+  { "Orange", 255, 165, 0, 1000 },
 
   // Final Blue stays on for 3 seconds
-  {"Blue",        0,   0, 255, 3000}
+  { "Blue", 0, 0, 255, 3000 }
 };
 
 const uint8_t DREAMCOAT_COUNT =
-  sizeof(dreamcoatColors) /
-  sizeof(dreamcoatColors[0]);
+  sizeof(dreamcoatColors) / sizeof(dreamcoatColors[0]);
 
 uint8_t dreamcoatIndex = 0;
 unsigned long dreamcoatLastChange = 0;
@@ -239,6 +237,10 @@ void processCommand(String command) {
 
     showLocator();
 
+  } else if (command == "B") {
+
+    showB();
+
   } else if (command == "ON") {
 
     setSolidColor(255, 255, 255, ON_BRIGHTNESS);
@@ -272,8 +274,7 @@ void setSolidColor(
   uint8_t red,
   uint8_t green,
   uint8_t blue,
-  uint8_t brightness
-) {
+  uint8_t brightness) {
 
   currentMode = MODE_SOLID;
 
@@ -282,8 +283,7 @@ void setSolidColor(
   uint32_t color = pixels.Color(
     red,
     green,
-    blue
-  );
+    blue);
 
   for (uint8_t i = 0; i < LED_COUNT; i++) {
     pixels.setPixelColor(i, color);
@@ -310,14 +310,12 @@ void showLocator() {
   // First LED (index 0) = Green
   pixels.setPixelColor(
     0,
-    pixels.Color(0, 255, 0)
-  );
+    pixels.Color(0, 255, 0));
 
   // Last LED (index 24) = Red
   pixels.setPixelColor(
     LED_COUNT - 1,
-    pixels.Color(255, 0, 0)
-  );
+    pixels.Color(255, 0, 0));
 
   // Update the LED matrix
   pixels.show();
@@ -338,6 +336,75 @@ void showLocator() {
   Serial.println();
 }
 
+
+
+// =====================================
+// B MODE
+// =====================================
+
+
+void showB() {
+
+  // Stop active animations
+  currentMode = MODE_SOLID;
+
+  // Set brightness to 80%
+  pixels.setBrightness(COLOR_BRIGHTNESS);
+
+  // Turn off all LEDs
+  pixels.clear();
+
+  // Letter B pattern (5x5 matrix)
+  // 1 = ON, 0 = OFF
+  const bool letterB[5][5] = {
+    {1, 1, 1, 1, 0},
+    {1, 0, 0, 0, 1},
+    {1, 1, 1, 1, 0},
+    {1, 0, 0, 0, 1},
+    {1, 1, 1, 1, 0}
+  };
+
+  // Draw the letter B
+  for (int row = 0; row < 5; row++) {
+    for (int col = 0; col < 5; col++) {
+
+      if (letterB[row][col]) {
+
+        // Serpentine NeoPixel layout
+        int index;
+
+        if (row % 2 == 0) {
+          index = row * 5 + col;
+        } else {
+          index = row * 5 + (4 - col);
+        }
+
+        pixels.setPixelColor(
+          index,
+          pixels.Color(0, 128, 255)
+        );
+      }
+    }
+  }
+
+  // Update the LED matrix
+  pixels.show();
+
+  // Display information
+  Serial.println();
+  Serial.println("===========================");
+  Serial.println("          B MODE");
+  Serial.println("===========================");
+  Serial.println();
+  Serial.println("Displaying letter B");
+  Serial.println("Color: Blue (0, 128, 255)");
+  Serial.println("Brightness: 80%");
+  Serial.println("All other LEDs are OFF.");
+  Serial.println("---------------------------");
+  Serial.println();
+}
+
+
 // =====================================
 // SMOOTH RAINBOW
 // =====================================
@@ -346,12 +413,10 @@ void updateRainbow() {
 
   for (uint8_t i = 0; i < LED_COUNT; i++) {
 
-    uint16_t hue = rainbowOffset +
-      (uint32_t)i * 65536UL / LED_COUNT;
+    uint16_t hue = rainbowOffset + (uint32_t)i * 65536UL / LED_COUNT;
 
     uint32_t color = pixels.gamma32(
-      pixels.ColorHSV(hue, 255, 255)
-    );
+      pixels.ColorHSV(hue, 255, 255));
 
     pixels.setPixelColor(i, color);
   }
@@ -395,17 +460,14 @@ void startDreamcoat() {
 
 void showDreamcoatColor() {
 
-  const DreamcoatColor &color =
+  const DreamcoatColor& color =
     dreamcoatColors[dreamcoatIndex];
 
   pixels.setBrightness(COLOR_BRIGHTNESS);
 
   // Black means all LEDs OFF
   if (
-    color.red == 0 &&
-    color.green == 0 &&
-    color.blue == 0
-  ) {
+    color.red == 0 && color.green == 0 && color.blue == 0) {
 
     pixels.clear();
 
@@ -414,8 +476,7 @@ void showDreamcoatColor() {
     uint32_t pixelColor = pixels.Color(
       color.red,
       color.green,
-      color.blue
-    );
+      color.blue);
 
     for (uint8_t i = 0; i < LED_COUNT; i++) {
 
@@ -445,8 +506,7 @@ void updateDreamcoat() {
     dreamcoatColors[dreamcoatIndex].duration;
 
   if (
-    currentTime - dreamcoatLastChange >= duration
-  ) {
+    currentTime - dreamcoatLastChange >= duration) {
 
     dreamcoatIndex++;
 

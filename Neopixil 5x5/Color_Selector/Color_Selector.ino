@@ -28,7 +28,8 @@
 Adafruit_NeoPixel pixels(
   LED_COUNT,
   LED_PIN,
-  NEO_GRB + NEO_KHZ800);
+  NEO_GRB + NEO_KHZ800
+);
 
 // =====================================
 // OPERATING MODES
@@ -116,20 +117,22 @@ void setup() {
   Serial.begin(115200);
 
   pixels.begin();
+
+  // Start with all LEDs OFF
+  currentMode = MODE_OFF;
   pixels.setBrightness(ON_BRIGHTNESS);
   pixels.clear();
   pixels.show();
-
-  // Default startup: White at 50%
-  setSolidColor(255, 255, 255, ON_BRIGHTNESS);
-
-  delay(1000);
 
   Serial.println();
   Serial.println("===========================");
   Serial.println("  QT Py NeoPixel Controller");
   Serial.println("===========================");
   Serial.println();
+
+  Serial.println("Startup complete.");
+  Serial.println("All LEDs are OFF.");
+  Serial.println("Waiting for command.");
 
   printHelp();
 }
@@ -241,6 +244,10 @@ void processCommand(String command) {
 
     showB();
 
+  } else if (command == "J") {
+
+    showJ();
+
   } else if (command == "ON") {
 
     setSolidColor(255, 255, 255, ON_BRIGHTNESS);
@@ -283,7 +290,8 @@ void setSolidColor(
   uint32_t color = pixels.Color(
     red,
     green,
-    blue);
+    blue
+  );
 
   for (uint8_t i = 0; i < LED_COUNT; i++) {
     pixels.setPixelColor(i, color);
@@ -310,12 +318,14 @@ void showLocator() {
   // First LED (index 0) = Green
   pixels.setPixelColor(
     0,
-    pixels.Color(0, 255, 0));
+    pixels.Color(0, 255, 0)
+  );
 
   // Last LED (index 24) = Red
   pixels.setPixelColor(
     LED_COUNT - 1,
-    pixels.Color(255, 0, 0));
+    pixels.Color(255, 0, 0)
+  );
 
   // Update the LED matrix
   pixels.show();
@@ -336,12 +346,9 @@ void showLocator() {
   Serial.println();
 }
 
-
-
 // =====================================
 // B MODE
 // =====================================
-
 
 void showB() {
 
@@ -404,6 +411,70 @@ void showB() {
   Serial.println();
 }
 
+// =====================================
+// J MODE
+// =====================================
+
+void showJ() {
+
+  // Stop active animations
+  currentMode = MODE_SOLID;
+
+  // Set brightness to 80%
+  pixels.setBrightness(COLOR_BRIGHTNESS);
+
+  // Turn off all LEDs
+  pixels.clear();
+
+  // Letter J pattern (5x5 matrix)
+  // 1 = ON, 0 = OFF
+  const bool letterJ[5][5] = {
+    {0, 1, 1, 1, 1},
+    {0, 0, 0, 1, 0},
+    {0, 0, 0, 1, 0},
+    {1, 0, 0, 1, 0},
+    {0, 1, 1, 1, 0}
+  };
+
+  // Draw the letter J
+  for (int row = 0; row < 5; row++) {
+    for (int col = 0; col < 5; col++) {
+
+      if (letterJ[row][col]) {
+
+        // Serpentine NeoPixel layout
+        int index;
+
+        if (row % 2 == 0) {
+          index = row * 5 + col;
+        } else {
+          index = row * 5 + (4 - col);
+        }
+
+        pixels.setPixelColor(
+          index,
+          pixels.Color(255, 218, 3)
+        );
+      }
+    }
+  }
+
+  // Update the LED matrix
+  pixels.show();
+
+  // Display information
+  Serial.println();
+  Serial.println("===========================");
+  Serial.println("          J MODE");
+  Serial.println("===========================");
+  Serial.println();
+  Serial.println("Displaying letter J");
+  Serial.println("Color: Gold (255, 218, 3)");
+  Serial.println("Brightness: 80%");
+  Serial.println("All other LEDs are OFF.");
+  Serial.println("---------------------------");
+  Serial.println();
+}
 
 // =====================================
 // SMOOTH RAINBOW
@@ -413,10 +484,13 @@ void updateRainbow() {
 
   for (uint8_t i = 0; i < LED_COUNT; i++) {
 
-    uint16_t hue = rainbowOffset + (uint32_t)i * 65536UL / LED_COUNT;
+    uint16_t hue =
+      rainbowOffset +
+      (uint32_t)i * 65536UL / LED_COUNT;
 
     uint32_t color = pixels.gamma32(
-      pixels.ColorHSV(hue, 255, 255));
+      pixels.ColorHSV(hue, 255, 255)
+    );
 
     pixels.setPixelColor(i, color);
   }
@@ -467,7 +541,10 @@ void showDreamcoatColor() {
 
   // Black means all LEDs OFF
   if (
-    color.red == 0 && color.green == 0 && color.blue == 0) {
+    color.red == 0 &&
+    color.green == 0 &&
+    color.blue == 0
+  ) {
 
     pixels.clear();
 
@@ -476,10 +553,10 @@ void showDreamcoatColor() {
     uint32_t pixelColor = pixels.Color(
       color.red,
       color.green,
-      color.blue);
+      color.blue
+    );
 
     for (uint8_t i = 0; i < LED_COUNT; i++) {
-
       pixels.setPixelColor(i, pixelColor);
     }
   }
@@ -506,7 +583,8 @@ void updateDreamcoat() {
     dreamcoatColors[dreamcoatIndex].duration;
 
   if (
-    currentTime - dreamcoatLastChange >= duration) {
+    currentTime - dreamcoatLastChange >= duration
+  ) {
 
     dreamcoatIndex++;
 
@@ -561,6 +639,10 @@ void printHelp() {
   Serial.println("RAINBOW   - Smooth Rainbow");
   Serial.println("DREAMCOAT - Dreamcoat Color Cycle");
   Serial.println("LOCATOR   - Show First/Last LED");
+
+  Serial.println();
+  Serial.println("B         - Blue Letter B");
+  Serial.println("J         - Gold Letter J");
 
   Serial.println();
   Serial.println("ON        - White at 50%");
